@@ -2,10 +2,9 @@
 
 import re
 
-
 # https://gist.github.com/dperini/729294
 RE_URLS = re.compile(
-    r'((?:(?P<protocol>https?|ftp)://)?'
+    r'((?:(?P<protocol>[-.+a-zA-Z0-9]{1,12})://)?'
     r'(?:\S+(?::\S*)?@)?'
     r'((?P<hostname>'
     r'(?!(?:10|127)(?:\.\d{1,3}){3})'
@@ -24,30 +23,49 @@ RE_URLS = re.compile(
     re.IGNORECASE
 )
 
+PROTOCOL_TRANSLATIONS = {
+    'http': 'hXXp',
+    'https': 'hXXps',
+    'ftp': 'fXp',
+}
+
+
+def defang_protocol(proto):
+    return PROTOCOL_TRANSLATIONS.get(proto.lower(), '({0})'.format(proto))
+
+
 def defang(line):
     clean_line = line
     for match in RE_URLS.finditer(line):
         clean = ''
         if match.group('protocol'):
-            clean += match.group('protocol').replace('t', 'X')
+            clean = defang_protocol(match.group('protocol'))
             clean += '://'
         clean += match.group('hostname')
         clean += match.group('tld').replace('.', '[.]')
         clean_line = clean_line.replace(match.group(1), clean)
     return clean_line
 
+
 def defanger(infile, outfile):
     for line in infile:
         clean_line = defang(line)
         outfile.write(clean_line)
 
+
 def refang(line):
-    dirty_line = re.sub(r'\[((\.)|((dot)|DOT))\]', '.', line)
-    if re.match(r'^h([x]{2}|[X]{2})p(s)*:', dirty_line):
-        dirty_line = re.sub(r'^h([x]{2}|[X]{2})p', 'http', dirty_line)
-    if re.match(r'^f([x]{1}|[X]{1})p:', dirty_line):
-        dirty_line = re.sub(r'^f([x]{1}|[X]{1})p', 'ftp', dirty_line)
+    dirty_line = re.sub(r'\((\.|dot)\)', '.', line,
+                        re.IGNORECASE)
+    dirty_line = re.sub(r'\[(\.|dot)\]', '.', line,
+                        re.IGNORECASE)
+    dirty_line = re.sub(r'^h([x]{1,2})p(s?)://', r'http\1://', dirty_line,
+                        re.IGNORECASE)
+    dirty_line = re.sub(r'^(s?)fxp(s?)://', r'\1ftp\2://', dirty_line,
+                        re.IGNORECASE)
+    dirty_line = re.sub(r'^\((\w{1,10})\)://', r'\1://', dirty_line,
+                        re.IGNORECASE)
     return dirty_line
+
 
 def refanger(infile, outfile):
     for line in infile:
