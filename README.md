@@ -19,3 +19,9 @@ Usage
         >>> url = "http://evil.example.com/malicious.php"
         >>> defang(url)
         'hXXp://evil.example[.]com/malicious.php'
+
+Releases
+--------
+
+0.3.0:
+  - added some regex fixes and arbitrary protocol defanging
