@@ -2,10 +2,6 @@
 
 import re
 
-try:
-    from urllib2 import urlparse
-except:
-    from urllib.parse import urlparse
 
 # https://gist.github.com/dperini/729294
 RE_URLS = re.compile(
