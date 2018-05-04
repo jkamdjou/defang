@@ -55,15 +55,15 @@ def defanger(infile, outfile):
 
 def refang(line):
     dirty_line = re.sub(r'\((\.|dot)\)', '.', line,
-                        re.IGNORECASE)
-    dirty_line = re.sub(r'\[(\.|dot)\]', '.', line,
-                        re.IGNORECASE)
-    dirty_line = re.sub(r'^h([x]{1,2})p(s?)://', r'http\1://', dirty_line,
-                        re.IGNORECASE)
+                        flags=re.IGNORECASE)
+    dirty_line = re.sub(r'\[(\.|dot)\]', '.', dirty_line,
+                        flags=re.IGNORECASE)
+    dirty_line = re.sub(r'^h([x]{1,2})p(s?)://', r'http\2://', dirty_line,
+                        flags=re.IGNORECASE)
     dirty_line = re.sub(r'^(s?)fxp(s?)://', r'\1ftp\2://', dirty_line,
-                        re.IGNORECASE)
-    dirty_line = re.sub(r'^\((\w{1,10})\)://', r'\1://', dirty_line,
-                        re.IGNORECASE)
+                        flags=re.IGNORECASE)
+    dirty_line = re.sub(r'^\(([-.+a-zA-Z0-9]{1,12})\)://', r'\1://', dirty_line,
+                        flags=re.IGNORECASE)
     return dirty_line
 
 
