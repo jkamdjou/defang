@@ -5,7 +5,7 @@ import re
 # https://gist.github.com/dperini/729294
 RE_URLS = re.compile(
     r'((?:(?P<protocol>[-.+a-zA-Z0-9]{1,12})://)?'
-    r'(?P<auth>:\S+(?::\S*)?@)?'
+    r'(?P<auth>[^@\:]+(?:\:[^@]*)?@)?'
     r'((?P<hostname>'
     r'(?!(?:10|127)(?:\.\d{1,3}){3})'
     r'(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})'
