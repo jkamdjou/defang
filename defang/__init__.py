@@ -5,7 +5,7 @@ import re
 # https://gist.github.com/dperini/729294
 RE_URLS = re.compile(
     r'((?:(?P<protocol>[-.+a-zA-Z0-9]{1,12})://)?'
-    r'(?:\S+(?::\S*)?@)?'
+    r'(?P<auth>:\S+(?::\S*)?@)?'
     r'((?P<hostname>'
     r'(?!(?:10|127)(?:\.\d{1,3}){3})'
     r'(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})'
@@ -41,6 +41,8 @@ def defang(line):
         if match.group('protocol'):
             clean = defang_protocol(match.group('protocol'))
             clean += '://'
+        if match.group('auth'):
+            clean += match.group('auth')
         clean += match.group('hostname')
         clean += match.group('tld').replace('.', '[.]')
         clean_line = clean_line.replace(match.group(1), clean)
