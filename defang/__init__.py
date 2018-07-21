@@ -22,6 +22,13 @@ RE_URLS = re.compile(
     r'(?:/\S*)?',
     re.IGNORECASE
 )
+RE_IP_URLS = re.compile(
+    r'((?:(?P<protocol>[-.+a-zA-Z0-9]{1,12})://)?'
+    r'(?P<auth>[^@\:]+(?:\:[^@]*)?@)?'
+    r'(?P<ip>\d+\.\d+\.\d+\.\d+))'
+    r'(?P<path>/\S*)?',
+    re.IGNORECASE
+)
 
 PROTOCOL_TRANSLATIONS = {
     'http': 'hXXp',
@@ -32,6 +39,11 @@ PROTOCOL_TRANSLATIONS = {
 
 def defang_protocol(proto):
     return PROTOCOL_TRANSLATIONS.get(proto.lower(), '({0})'.format(proto))
+
+
+def defang_ip(ip):
+    head, tail = ip.split('.', 1)
+    return '{0}[.]{1}'.format(head, tail)
 
 
 def defang(line):
@@ -45,6 +57,15 @@ def defang(line):
             clean += match.group('auth')
         clean += match.group('hostname')
         clean += match.group('tld').replace('.', '[.]')
+        clean_line = clean_line.replace(match.group(1), clean)
+    for match in RE_IP_URLS.finditer(line):
+        clean = ''
+        if match.group('protocol'):
+            clean = defang_protocol(match.group('protocol'))
+            clean += '://'
+        if match.group('auth'):
+            clean += match.group('auth')
+        clean += defang_ip(match.group('ip'))
         clean_line = clean_line.replace(match.group(1), clean)
     return clean_line
 
