@@ -23,5 +23,7 @@ Usage
 Releases
 --------
 
+0.4.0:
+  - added support for URIs with IPv4
 0.3.0:
   - added some regex fixes and arbitrary protocol defanging
