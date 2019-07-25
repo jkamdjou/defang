@@ -118,10 +118,10 @@ def defang(line, all_dots=False, colon=False):
     clean_line = line
     for match in RE_URLS.finditer(line):
         cleaned_match = _defang_match(match, all_dots=all_dots, colon=colon)
-        clean_line = clean_line.replace(match.group(1), cleaned_match)
+        clean_line = clean_line.replace(match.group(1), cleaned_match, 1)
     for match in RE_IP_URLS.finditer(line):
         cleaned_match = _defang_ip_match(match, all_dots=all_dots, colon=colon)
-        clean_line = clean_line.replace(match.group(1), cleaned_match)
+        clean_line = clean_line.replace(match.group(1), cleaned_match, 1)
     return clean_line
 
 

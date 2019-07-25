@@ -32,6 +32,84 @@ def test_defang():
         assert defang(fanged) == defanged
 
 
+def test_defang_colon():
+    for fanged, defanged in (
+        ('example.org',
+         'example[.]org'),
+        ('http://example.org',
+         'hXXp[:]//example[.]org'),
+        ('example.org\nbadguy.example.org\n',
+         'example[.]org\nbadguy.example[.]org\n'),
+        ('http://1.22.33.111/path',
+         'hXXp[:]//1[.]22.33.111/path'),
+        ('HTTP://EVIL-guy.badguy.NET',
+         'hXXp[:]//EVIL-guy.badguy[.]NET'),
+        ('ssh://foobar.example.org/',
+         '(ssh)[:]//foobar.example[.]org/'),
+        ('ftp://foo-bar.example.org',
+         'fXp[:]//foo-bar.example[.]org'),
+        ('http://sub.domain.org/path/to?bad=stuff',
+         'hXXp[:]//sub.domain[.]org/path/to?bad=stuff'),
+        ('ftp://user:pass@example.com/dir',
+         'fXp[:]//user:pass@example[.]com/dir'),
+        ('ftp://user:pass@127.13.1.2/dir',
+         'fXp[:]//user:pass@127[.]13.1.2/dir'),
+    ):
+        assert defang(fanged, colon=True) == defanged
+
+
+def test_defang_all_dots():
+    for fanged, defanged in (
+        ('example.org',
+         'example[.]org'),
+        ('http://example.org',
+         'hXXp://example[.]org'),
+        ('example.org\nbadguy.example.org\n',
+         'example[.]org\nbadguy[.]example[.]org\n'),
+        ('http://1.22.33.111/path',
+         'hXXp://1[.]22[.]33[.]111/path'),
+        ('HTTP://EVIL-guy.badguy.NET',
+         'hXXp://EVIL-guy[.]badguy[.]NET'),
+        ('ssh://foobar.example.org/',
+         '(ssh)://foobar[.]example[.]org/'),
+        ('ftp://foo-bar.example.org',
+         'fXp://foo-bar[.]example[.]org'),
+        ('http://sub.domain.org/path/to?bad=stuff',
+         'hXXp://sub[.]domain[.]org/path/to?bad=stuff'),
+        ('ftp://user:pass@example.com/dir',
+         'fXp://user:pass@example[.]com/dir'),
+        ('ftp://user:pass@127.13.1.2/dir',
+         'fXp://user:pass@127[.]13[.]1[.]2/dir'),
+    ):
+        assert defang(fanged, all_dots=True) == defanged
+
+
+def test_defang_all_dots_and_colon():
+    for fanged, defanged in (
+        ('example.org',
+         'example[.]org'),
+        ('http://example.org',
+         'hXXp[:]//example[.]org'),
+        ('example.org\nbadguy.example.org\n',
+         'example[.]org\nbadguy[.]example[.]org\n'),
+        ('http://1.22.33.111/path',
+         'hXXp[:]//1[.]22[.]33[.]111/path'),
+        ('HTTP://EVIL-guy.badguy.NET',
+         'hXXp[:]//EVIL-guy[.]badguy[.]NET'),
+        ('ssh://foobar.example.org/',
+         '(ssh)[:]//foobar[.]example[.]org/'),
+        ('ftp://foo-bar.example.org',
+         'fXp[:]//foo-bar[.]example[.]org'),
+        ('http://sub.domain.org/path/to?bad=stuff',
+         'hXXp[:]//sub[.]domain[.]org/path/to?bad=stuff'),
+        ('ftp://user:pass@example.com/dir',
+         'fXp[:]//user:pass@example[.]com/dir'),
+        ('ftp://user:pass@127.13.1.2/dir',
+         'fXp[:]//user:pass@127[.]13[.]1[.]2/dir'),
+    ):
+        assert defang(fanged, all_dots=True, colon=True) == defanged
+
+
 def test_refang():
     for fanged, defanged in (
         ('example.org',
