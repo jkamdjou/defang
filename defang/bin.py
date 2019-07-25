@@ -9,7 +9,7 @@ def defang():
     parser.add_argument('-i', '--input', help='input file, default stdin')
     parser.add_argument('-o', '--output', help='output file, default stdout')
     args = parser.parse_args()
-    
+
     try:
         if args.input:
             input_f = open(args.input)
