@@ -29,12 +29,21 @@ RE_IP_URLS = re.compile(
     r'(?P<path>/\S*)?',
     re.IGNORECASE
 )
+RE_IP_FRAGMENT = re.compile(r'^\d+(?:\.\d+)*$')
 
 PROTOCOL_TRANSLATIONS = {
     'http': 'hXXp',
     'https': 'hXXps',
     'ftp': 'fXp',
 }
+
+
+def _is_ip_fragment(hostname):
+    '''
+    For some reason, there is a bug where the URL regex matches on the first
+    half of an IP address. This double checks that and skips the match if so.
+    '''
+    return bool(RE_IP_FRAGMENT.match(hostname))
 
 
 def defang_protocol(proto):
@@ -52,7 +61,7 @@ def defang_ip(ip, all_dots=False):
     if all_dots:
         # Support just defanging all the dots in the passed IP.
         return ip.replace('.', '[.]')
-    # Default behavior just masks the last dot.
+    # Default behavior just masks the first dot.
     head, tail = ip.split('.', 1)
     return '{0}[.]{1}'.format(head, tail)
 
@@ -115,14 +124,16 @@ def defang(line, all_dots=False, colon=False):
     :param bool colon: whether to defang the colon in the protocol
     :return: the defanged string
     '''
-    clean_line = line
     for match in RE_URLS.finditer(line):
+        print(match.group('hostname'))
+        if _is_ip_fragment(match.group('hostname')):
+            continue
         cleaned_match = _defang_match(match, all_dots=all_dots, colon=colon)
-        clean_line = clean_line.replace(match.group(1), cleaned_match, 1)
+        line = line.replace(match.group(1), cleaned_match, 1)
     for match in RE_IP_URLS.finditer(line):
         cleaned_match = _defang_ip_match(match, all_dots=all_dots, colon=colon)
-        clean_line = clean_line.replace(match.group(1), cleaned_match, 1)
-    return clean_line
+        line = line.replace(match.group(1), cleaned_match, 1)
+    return line
 
 
 def defanger(infile, outfile):
