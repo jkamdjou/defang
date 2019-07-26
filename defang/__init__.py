@@ -161,11 +161,11 @@ def refang(line):
                         line, flags=re.IGNORECASE)
     dirty_line = re.sub(r'\[(\.|dot)\]', '.',
                         dirty_line, flags=re.IGNORECASE)
-    dirty_line = re.sub(r'(\s*)h([x]{1,2})p([s]?)://', r'\1http\3://',
+    dirty_line = re.sub(r'(\s*)h([x]{1,2})p([s]?)\[?:\]?//', r'\1http\3://',
                         dirty_line, flags=re.IGNORECASE)
-    dirty_line = re.sub(r'(\s*)(s?)fxp(s?)://', r'\1\2ftp\3://',
+    dirty_line = re.sub(r'(\s*)(s?)fxp(s?)\[?:\]?//', r'\1\2ftp\3://',
                         dirty_line, flags=re.IGNORECASE)
-    dirty_line = re.sub(r'(\s*)\(([-.+a-zA-Z0-9]{1,12})\)://', r'\1\2://',
+    dirty_line = re.sub(r'(\s*)\(([-.+a-zA-Z0-9]{1,12})\)\[?:\]?//', r'\1\2://',
                         dirty_line, flags=re.IGNORECASE)
     return dirty_line
 
