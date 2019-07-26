@@ -30,6 +30,8 @@ Usage
 Releases
 --------
 
+0.5.1:
+  - refangs boxed in colons [:]
 0.5.0:
   - added new options to defang
   - `all_dots=True` will turn all dots into [.] and not just the one before the TLD
