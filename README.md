@@ -30,6 +30,8 @@ Usage
 Releases
 --------
 
+0.5.2:
+  - left in a debug print message in my last patch... removed it.
 0.5.1:
   - refangs boxed in colons [:]
 0.5.0:
