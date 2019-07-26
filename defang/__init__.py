@@ -125,7 +125,6 @@ def defang(line, all_dots=False, colon=False):
     :return: the defanged string
     '''
     for match in RE_URLS.finditer(line):
-        print(match.group('hostname'))
         if _is_ip_fragment(match.group('hostname')):
             continue
         cleaned_match = _defang_match(match, all_dots=all_dots, colon=colon)
