@@ -26,6 +26,9 @@ Usage
         'hXXp[:]//evil.example[.]com/malicious.php'
         >>> defang(url, all_dots=True)
         'hXXp://evil[.]example[.]com/malicious.php'
+        >>> defang(url, zero_width_replace=True)
+        'h\u200bt\u200bt\u200bp\u200b:\u200b/\u200b/\u200be\u200bv\u200bi\u200bl\u200b.\u200be\u200bx\u200ba\u200bm\u200bp\u200bl\u200be\u200b.\u200bc\u200bo\u200bm\u200b/\u200bm\u200ba\u200bl\u200bi\u200bc\u200bi\u200bo\u200bu\u200bs\u200b.\u200bp\u200bh\u200bp'
+        # printed as 'h​t​t​p​:​/​/​e​v​i​l​.​e​x​a​m​p​l​e​.​c​o​m​/​m​a​l​i​c​i​o​u​s​.​p​h​p'
 
 Releases
 --------
