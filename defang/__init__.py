@@ -158,7 +158,6 @@ def refang(line):
     Refangs a line of text.
 
     :param str line: the line of text to reverse the defanging of.
-    :param bool zero_width_replace: removes the zero width characters from the input if it matches
     :return: the "dirty" line with actual URIs
     '''
     if all(char==ZERO_WIDTH_CHARACTER for char in line[1::2]):
