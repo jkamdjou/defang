@@ -37,6 +37,7 @@ PROTOCOL_TRANSLATIONS = {
     'ftp': 'fXp',
 }
 
+ZERO_WIDTH_CHARACTER = '​'
 
 def _is_ip_fragment(hostname):
     '''
@@ -115,15 +116,18 @@ def _defang_ip_match(match, all_dots=False, colon=False):
     return clean
 
 
-def defang(line, all_dots=False, colon=False):
+def defang(line, all_dots=False, colon=False, zero_width_replace=False):
     '''
     Defangs a line of text.
 
     :param str line: the string with URIs to be defanged
     :param bool all_dots: whether to defang all dots in the URIs
     :param bool colon: whether to defang the colon in the protocol
+    :param bool zero_width_replace: inserts a zero width character after every character
     :return: the defanged string
     '''
+    if zero_width_replace:
+        return ZERO_WIDTH_CHARACTER.join(line)
     for match in RE_URLS.finditer(line):
         if _is_ip_fragment(match.group('hostname')):
             continue
@@ -154,8 +158,11 @@ def refang(line):
     Refangs a line of text.
 
     :param str line: the line of text to reverse the defanging of.
+    :param bool zero_width_replace: removes the zero width characters from the input if it matches
     :return: the "dirty" line with actual URIs
     '''
+    if all(char==ZERO_WIDTH_CHARACTER for char in line[1::2]):
+        return line[::2]
     dirty_line = re.sub(r'\((\.|dot)\)', '.',
                         line, flags=re.IGNORECASE)
     dirty_line = re.sub(r'\[(\.|dot)\]', '.',
