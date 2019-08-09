@@ -33,6 +33,8 @@ Usage
 Releases
 --------
 
+0.5.3:
+  - Merged in optional feature to split characters with the zero-width character.
 0.5.2:
   - left in a debug print message in my last patch... removed it.
 0.5.1:
